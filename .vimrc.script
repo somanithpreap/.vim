@@ -1,0 +1,96 @@
+
+" VIMSCRIPT ------------------------------------------------
+"
+" Enable the marker method of folding.
+" Use the marker method of folding.
+augroup filetype_vim
+    autocmd!
+    autocmd FileType vim setlocal foldmethod=marker
+augroup END
+
+" If the current file type is HTML, set indentation to 2 spaces.
+autocmd Filetype html setlocal tabstop=2 shiftwidth=2 expandtab 
+
+" If Vim version is equal to or greater than 7.3 enable undofile.
+" This allows you to undo changes to a file even after saving it.
+if version >= 703
+    set undodir=~/.vim/backup
+    set undofile
+    set undoreload=10000
+endif
+
+" You can split a window into sections by typing `:split` or `:vsplit`.
+" Display cursorline and cursorcolumn ONLY in active window.
+augroup cursor_off
+    autocmd!
+    autocmd WinLeave * set nocursorline nocursorcolumn
+    autocmd WinEnter * set cursorline cursorcolumn
+augroup END
+
+" python new file with template
+augroup NewPythonFile
+    autocmd!
+    autocmd BufNewFile *.py 0read ~/.vim/templates/python.template
+augroup END
+
+" html new file with template
+augroup NewHTMLFile
+    autocmd!
+    autocmd BufNewFile *.html 0read ~/.vim/templates/html.template
+augroup END
+
+" .c new file with template
+augroup NewCFile
+    autocmd!
+    autocmd BufNewFile *.c 0read ~/.vim/templates/c.template
+augroup END
+
+" .cpp new file with template
+augroup NewCPPFile
+    autocmd!
+    autocmd BufNewFile *.cpp 0read ~/.vim/templates/cpp.template
+augroup END
+
+" .go new file with template
+augroup NewGoFile
+    autocmd!
+    autocmd BufNewFile *.go 0read ~/.vim/templates/go.template
+augroup END
+
+
+" .rs new file with template
+" but check first, using template only without cargo project
+function! s:is_in_cargo_project()
+    let l:dir = expand('%:p:h')
+    while l:dir != '/'
+        if filereadable(l:dir . '/Cargo.toml')
+            return 1
+        endif
+        let l:dir = fnamemodify(l:dir, ':h')
+    endwhile
+    return 0
+endfunction
+
+function! s:load_rust_template()
+    " Read the template file
+    let l:template_file = expand('~/.vim/templates/rust.template')
+    if filereadable(l:template_file)
+        execute '0r ' . l:template_file
+    else
+        echo "Template file not found: " . l:template_file
+    endif
+endfunction
+
+function! s:handle_new_rust_file()
+    if !s:is_in_cargo_project()
+        call s:load_rust_template()
+    endif
+endfunction
+
+" .rs new file with template
+" call function LoadRustTemplate()
+augroup NewRustFile
+    autocmd!
+    autocmd BufNewFile *.rs call s:handle_new_rust_file()
+augroup END
+

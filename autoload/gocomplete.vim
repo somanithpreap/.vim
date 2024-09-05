@@ -1,0 +1,1 @@
+/home/manith/.vim/plugged/gocode/vim/autoload/gocomplete.vim

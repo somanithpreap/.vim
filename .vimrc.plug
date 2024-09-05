@@ -1,0 +1,85 @@
+call plug#begin('~/.vim/plugged')
+Plug 'rust-lang/rust.vim'
+Plug 'dense-analysis/ale'
+Plug 'preservim/nerdtree'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'tpope/vim-surround'
+Plug 'EdenEast/nightfox.nvim'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'majutsushi/tagbar'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+
+Plug 'deoplete-plugins/deoplete-clang'
+
+Plug 'fatih/vim-go', { 'tag': 'v1.19' }
+Plug 'nsf/gocode', { 'rtp': 'vim', 'do': '~/.vim/plugged/gocode/vim/symlink.sh' }
+Plug 'deoplete-plugins/deoplete-go'
+
+Plug 'deoplete-plugins/deoplete-jedi'
+call plug#end()
+" set termguicolors     " enable true colors support
+" let g:tokyonight_enable_italic = 1
+" colorscheme tokyonight
+
+colorscheme carbonfox
+
+let g:rustfmt_autosave = 1
+let g:rustfmt_emit_files = 1
+let g:rustfmt_fail_silently = 0
+
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" coc configs
+hi CocErrorHighlight cterm=underline,bold ctermfg=Red guifg=#FF0000  gui=underline,bold
+hi CocWarningHighlight cterm=underline,bold ctermfg=Yellow guifg=#FFFF00 gui=underline,bold
+hi CocInfoHighlight cterm=underline gui=underline
+hi CocHintHighlight cterm=underline gui=underline
+
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <CR> coc#pum#visible() ? coc#pum#confirm(): "\<CR>"
+
+nnoremap <silent> q :call CocActionAsync('doHover')<CR>
+
+autocmd CursorHold * silent call CocActionAsync('diagnosticInfo')
+set updatetime=500
+
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <F3> :NERDTreeToggle<Cr>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+
+nnoremap cc :call NERDComment(0,'toggle')<CR>
+vnoremap cc :call NERDComment(0,'toggle')<CR>
+
+let g:airline_theme = 'atomic'
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#fnamemod = ':t'
+let g:airline_section_z = airline#section#create(['%1p%% ', 'Ξ%l%', '\⍿%c'])
+call airline#parts#define_accent('mode', 'black')
+
+nnoremap <S-Tab> :bnext<CR>
+vnoremap <S-Tab> :bnext<CR>
+inoremap <S-Tab> <Esc>:bnext<CR>
+
+nnoremap <Tab><Right> :bnext<CR>
+vnoremap <Tab><Right> :bnext<CR>
+
+nnoremap <Tab><Left> :bprev<CR>
+vnoremap <Tab><Left> :bprev<CR>
+
+" Have nerdtree ignore certain files and directories.
+" let NERDTreeIgnore=['\.git$', '\.jpg$', '\.mp4$', '\.ogg$', '\.iso$', '\.pdf$', '\.pyc$', '\.odt$', '\.png$', '\.gif$', '\.db$']
